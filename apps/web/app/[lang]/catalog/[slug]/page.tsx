@@ -142,7 +142,16 @@ export default async function ProductDetailPage(
 
           {/* Add to cart */}
           <div className="pt-2">
-            <AddToCartButton productId={product.id} label={catalogDict['addToCart'] ?? ''} />
+            <AddToCartButton
+              productId={product.id}
+              slug={product.slug}
+              nameUk={product.nameUk}
+              nameEn={product.nameEn}
+              priceCents={product.priceCents}
+              photo={product.photos[0] ?? null}
+              fulfillmentTypes={product.fulfillmentTypes}
+              label={catalogDict['addToCart'] ?? ''}
+            />
           </div>
         </div>
       </div>

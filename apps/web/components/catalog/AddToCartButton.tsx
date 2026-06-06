@@ -1,22 +1,36 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
+import { useCartStore } from '@/lib/store/cart'
+import type { FulfillmentType } from '@zakhtsyanka/shared/types'
 
 interface AddToCartButtonProps {
   productId: string
+  slug: string
+  nameUk: string
+  nameEn: string
+  priceCents: number
+  photo: string | null
+  fulfillmentTypes: FulfillmentType[]
   label: string
 }
 
-export function AddToCartButton({ productId, label }: AddToCartButtonProps) {
-  // Cart store will be wired in Phase 1-B
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function AddToCartButton({
+  productId, slug, nameUk, nameEn, priceCents, photo, fulfillmentTypes, label,
+}: AddToCartButtonProps) {
+  const addItem = useCartStore((s) => s.addItem)
+  const [added, setAdded] = useState(false)
+
   function handleClick() {
-    console.log('add to cart', productId)
+    addItem({ productId, slug, nameUk, nameEn, priceCents, photo, fulfillmentTypes })
+    setAdded(true)
+    setTimeout(() => setAdded(false), 1500)
   }
 
   return (
     <Button size="lg" className="w-full sm:w-auto" onClick={handleClick}>
-      {label}
+      {added ? '✓' : label}
     </Button>
   )
 }

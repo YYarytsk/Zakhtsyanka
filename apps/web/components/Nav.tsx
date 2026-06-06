@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { CartBadge } from './CartBadge'
 import type { SupportedLocale } from '@/app/[lang]/dictionaries'
 
 interface NavProps {
@@ -29,9 +30,7 @@ export function Nav({ lang, dict }: NavProps) {
           <Link href={lp(lang, 'catalog')} className="px-3 py-1.5 rounded hover:bg-stone-100 transition-colors">
             {nav['catalog']}
           </Link>
-          <Link href={lp(lang, 'cart')} className="px-3 py-1.5 rounded hover:bg-stone-100 transition-colors">
-            {nav['cart']}
-          </Link>
+          <CartBadge lang={lang} label={nav['cart'] ?? ''} />
           <Link href={lp(lang, 'orders')} className="px-3 py-1.5 rounded hover:bg-stone-100 transition-colors hidden sm:block">
             {nav['orders']}
           </Link>
