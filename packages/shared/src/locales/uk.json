@@ -1,0 +1,272 @@
+{
+  "storeName": "{storeName}",
+
+  "nav": {
+    "catalog": "Меню",
+    "cart": "Кошик",
+    "orders": "Мої замовлення",
+    "account": "Акаунт",
+    "admin": "Адмін",
+    "login": "Увійти",
+    "logout": "Вийти",
+    "langSwitch": "EN"
+  },
+
+  "catalog": {
+    "title": "Наша випічка",
+    "searchPlaceholder": "Пошук товарів…",
+    "noResults": "Нічого не знайдено. Спробуйте інший запит.",
+    "outOfStock": "Немає в наявності",
+    "translationPending": "Переклад готується",
+    "filters": {
+      "all": "Усе",
+      "vegan": "Веганське",
+      "vegetarian": "Вегетаріанське",
+      "glutenFree": "Без глютену",
+      "nutFree": "Без горіхів",
+      "dairyFree": "Без лактози",
+      "pickup": "Самовивіз",
+      "delivery": "Доставка"
+    },
+    "fulfillment": {
+      "pickup": "Самовивіз",
+      "delivery": "Доставка",
+      "preorder": "Попереднє замовлення"
+    },
+    "allergenNote": "Для людей із серйозними алергіями — уточніть склад у персоналу.",
+    "addToCart": "До кошика",
+    "itemsLeft": "{count, plural, one {залишився # товар} few {залишилось # товари} many {залишилось # товарів} other {залишилось # товарів}}"
+  },
+
+  "cart": {
+    "title": "Кошик",
+    "empty": "Кошик порожній",
+    "emptyAction": "Перейти до меню",
+    "itemCount": "{count, plural, one {# товар} few {# товари} many {# товарів} other {# товарів}}",
+    "quantity": "Кількість",
+    "remove": "Видалити",
+    "subtotal": "Підсумок",
+    "deliveryFee": "Вартість доставки",
+    "total": "Разом",
+    "orderType": {
+      "label": "Спосіб отримання",
+      "pickup": "Самовивіз",
+      "delivery": "Доставка додому"
+    },
+    "proceedToCheckout": "Оформити замовлення"
+  },
+
+  "checkout": {
+    "title": "Оформлення замовлення",
+    "slot": {
+      "label": "Час отримання",
+      "pickupLabel": "Час самовивозу",
+      "deliveryLabel": "Час доставки",
+      "noSlotsAvailable": "Немає доступних слотів на цей день. Спробуйте інший день.",
+      "selectDate": "Оберіть дату",
+      "selectTime": "Оберіть час"
+    },
+    "delivery": {
+      "addressLabel": "Адреса доставки",
+      "street": "Вулиця і номер будинку",
+      "city": "Місто",
+      "postalCode": "Поштовий індекс",
+      "outOfZone": "На жаль, ми не доставляємо за цією адресою.",
+      "fee": "Вартість доставки: {fee}"
+    },
+    "contact": {
+      "emailLabel": "Email для підтвердження",
+      "emailPlaceholder": "your@email.com"
+    },
+    "payment": {
+      "label": "Оплата",
+      "secureNote": "Платіжні дані захищені Stripe. Ми не зберігаємо ваші картки."
+    },
+    "placeOrder": "Сплатити і замовити",
+    "processing": "Обробляємо оплату…",
+    "errors": {
+      "slotUnavailable": "Цей час вже зайнятий. Будь ласка, оберіть інший.",
+      "capacityExceeded": "На жаль, місць на цей час не вистачає. Оберіть інший слот.",
+      "paymentFailed": "Оплату не вдалося провести. Перевірте дані картки і спробуйте ще раз.",
+      "generic": "Щось пішло не так. Спробуйте ще раз або зв'яжіться з нами."
+    }
+  },
+
+  "orderStatus": {
+    "received": "Отримано",
+    "preparing": "Готуємо",
+    "ready": "Готово до видачі",
+    "out_for_delivery": "В дорозі",
+    "completed": "Виконано",
+    "cancelled": "Скасовано"
+  },
+
+  "orders": {
+    "title": "Мої замовлення",
+    "empty": "У вас ще немає замовлень.",
+    "confirmationTitle": "Замовлення прийнято!",
+    "confirmationText": "Дякуємо! Ми надішлемо вам повідомлення, коли ваше замовлення буде готове.",
+    "orderNumber": "Замовлення №{id}",
+    "placedAt": "Оформлено {date}",
+    "fulfillmentSlot": "Час отримання: {slot}",
+    "type": {
+      "pickup": "Самовивіз",
+      "delivery": "Доставка"
+    },
+    "timeline": "Статус замовлення",
+    "viewOrder": "Переглянути замовлення"
+  },
+
+  "account": {
+    "title": "Мій акаунт",
+    "profile": "Профіль",
+    "orderHistory": "Історія замовлень",
+    "savedAddresses": "Збережені адреси",
+    "loyalty": {
+      "title": "Бонусна програма",
+      "balance": "{count, plural, one {# бал} few {# бали} many {# балів} other {# балів}}",
+      "history": "Історія балів",
+      "earn": "Нараховано",
+      "spend": "Використано"
+    },
+    "loyaltyReason": {
+      "order_earned": "За замовлення",
+      "reward_redeemed": "Використання нагороди",
+      "referral_bonus": "Реферальний бонус",
+      "birthday_bonus": "День народження",
+      "manual_adjustment": "Ручне коригування"
+    },
+    "language": {
+      "label": "Мова",
+      "uk": "Українська",
+      "en": "English"
+    }
+  },
+
+  "customRequest": {
+    "title": "Індивідуальне замовлення",
+    "subtitle": "Розкажіть нам про свій торт — ми зв'яжемось із вами для узгодження та розрахунку вартості.",
+    "form": {
+      "occasion": "Привід",
+      "occasionPlaceholder": "Наприклад: день народження, весілля, корпоратив",
+      "servings": "Кількість порцій",
+      "flavors": "Смаки і побажання",
+      "flavorsPlaceholder": "Ваніль, шоколад, ягоди тощо",
+      "dietaryNeeds": "Дієтичні обмеження",
+      "dietaryNeedsPlaceholder": "Без глютену, без горіхів тощо (якщо є)",
+      "dateNeeded": "Дата отримання",
+      "budget": "Орієнтовний бюджет",
+      "budgetPlaceholder": "Необов'язково",
+      "notes": "Додаткові побажання",
+      "notesPlaceholder": "Фото-референс, колір, тематика…",
+      "photos": "Фото-референс",
+      "photosHint": "До 3 фото, макс. 5 МБ кожне",
+      "submit": "Надіслати запит"
+    },
+    "status": {
+      "submitted": "Заявку отримано",
+      "quoted": "Отримайте пропозицію",
+      "approved": "Підтверджено",
+      "deposit_paid": "Депозит сплачено",
+      "scheduled": "Заплановано",
+      "completed": "Виконано",
+      "cancelled": "Скасовано"
+    },
+    "successMessage": "Дякуємо! Ми розглянемо ваш запит і зв'яжемось із вами протягом 24 годин.",
+    "thread": {
+      "placeholder": "Напишіть повідомлення…",
+      "send": "Надіслати"
+    }
+  },
+
+  "notifications": {
+    "orderReceived": {
+      "subject": "Ваше замовлення №{orderId} отримано — {storeName}",
+      "body": "Дякуємо за замовлення! Ми почнемо готувати його незабаром. Час отримання: {slot}."
+    },
+    "orderPreparing": {
+      "subject": "Ваше замовлення №{orderId} готується",
+      "body": "Ми вже готуємо ваше замовлення. Очікуйте до {slot}."
+    },
+    "orderReady": {
+      "subject": "Ваше замовлення №{orderId} готове!",
+      "body": "Ваше замовлення готове до отримання. Чекаємо на вас!"
+    },
+    "orderOutForDelivery": {
+      "subject": "Ваше замовлення №{orderId} в дорозі",
+      "body": "Кур'єр вже їде до вас. Очікуйте незабаром!"
+    },
+    "orderCompleted": {
+      "subject": "Замовлення №{orderId} виконано",
+      "body": "Дякуємо! Будемо раді бачити вас знову."
+    }
+  },
+
+  "admin": {
+    "nav": {
+      "orders": "Замовлення",
+      "catalog": "Каталог",
+      "customRequests": "Індив. замовлення",
+      "subscriptions": "Підписки",
+      "settings": "Налаштування",
+      "reports": "Звіти"
+    },
+    "orders": {
+      "title": "Замовлення",
+      "new": "Нові",
+      "all": "Усі",
+      "noOrders": "Нових замовлень немає",
+      "advanceStatus": "Оновити статус"
+    },
+    "catalog": {
+      "title": "Каталог",
+      "addProduct": "Додати товар",
+      "editProduct": "Редагувати товар",
+      "ukFields": "Українська",
+      "enFields": "English",
+      "translationPending": "Переклад відсутній",
+      "draftTranslation": "Чернетка (AI)",
+      "availability": "Наявність",
+      "dailyCap": "Денний ліміт",
+      "unlimitedCap": "Без ліміту"
+    },
+    "settings": {
+      "title": "Налаштування магазину",
+      "storeName": "Назва магазину",
+      "hours": "Години роботи",
+      "closed": "Зачинено",
+      "leadTimes": "Час підготовки",
+      "pickupLead": "Самовивіз (год.)",
+      "deliveryLead": "Доставка (год.)",
+      "deliveryZones": "Зони доставки",
+      "holidays": "Вихідні дні",
+      "pauseOrders": "Призупинити замовлення",
+      "announcement": "Оголошення",
+      "save": "Зберегти"
+    }
+  },
+
+  "errors": {
+    "notFound": "Сторінку не знайдено",
+    "serverError": "Помилка сервера. Спробуйте пізніше.",
+    "unauthorized": "Будь ласка, увійдіть, щоб продовжити.",
+    "forbidden": "У вас немає доступу до цієї сторінки.",
+    "validation": "Перевірте правильність введених даних."
+  },
+
+  "common": {
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "edit": "Редагувати",
+    "delete": "Видалити",
+    "confirm": "Підтвердити",
+    "back": "Назад",
+    "loading": "Завантаження…",
+    "required": "Обов'язкове поле",
+    "optional": "Необов'язково",
+    "yes": "Так",
+    "no": "Ні",
+    "currency": "₴",
+    "free": "Безкоштовно"
+  }
+}

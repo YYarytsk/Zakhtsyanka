@@ -1,0 +1,8 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+allowBuilds:
+  '0': sharp
+  '1': unrs-resolver
+  sharp: true
+  unrs-resolver: true

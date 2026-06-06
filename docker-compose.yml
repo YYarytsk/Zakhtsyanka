@@ -1,0 +1,28 @@
+version: '3.9'
+
+# Local development only — mirrors the Azure Container Apps environment.
+# Secret env vars are loaded from apps/web/.env.local (not committed).
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        NEXT_PUBLIC_STORE_NAME_UK: ${NEXT_PUBLIC_STORE_NAME_UK:-Захцянка}
+        NEXT_PUBLIC_STORE_NAME_EN: ${NEXT_PUBLIC_STORE_NAME_EN:-Zakhtsyanka}
+        NEXT_PUBLIC_WFP_MERCHANT_ACCOUNT: ${NEXT_PUBLIC_WFP_MERCHANT_ACCOUNT}
+        NEXT_PUBLIC_WFP_MERCHANT_DOMAIN: ${NEXT_PUBLIC_WFP_MERCHANT_DOMAIN}
+    ports:
+      - '3000:3000'
+    environment:
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      WFP_MERCHANT_SECRET_KEY: ${WFP_MERCHANT_SECRET_KEY}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      NOTIFICATION_FROM_EMAIL: ${NOTIFICATION_FROM_EMAIL}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER}
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
