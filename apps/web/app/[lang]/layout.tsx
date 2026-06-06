@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import '../globals.css'
 import { getDictionary, hasLocale, LOCALES } from './dictionaries'
 import { Nav } from '@/components/Nav'
+import { AnnouncementBanner } from '@/components/AnnouncementBanner'
 
 const inter = Inter({
   subsets: ['latin', 'cyrillic'],
@@ -48,6 +49,7 @@ export default async function LocaleLayout(props: LayoutProps<'/[lang]'>) {
   return (
     <html lang={lang} className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-stone-50 text-stone-900">
+        <AnnouncementBanner lang={lang} />
         <Nav lang={lang} dict={dict} />
         <main className="flex-1">{props.children}</main>
         <footer className="border-t border-stone-200 py-8 text-center text-sm text-stone-500">
