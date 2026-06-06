@@ -88,6 +88,7 @@ export interface SavedAddress {
 
 // ── Orders ─────────────────────────────────────────────────────────────────
 export type OrderStatus =
+  | 'pending_payment'
   | 'received'
   | 'preparing'
   | 'ready'
