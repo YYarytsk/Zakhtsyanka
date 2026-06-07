@@ -2,7 +2,6 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getDictionary, hasLocale } from '../dictionaries'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/server'
 import { getOrdersByCustomer } from '@/lib/db/orders'
 import { getLoyaltyHistory } from '@/lib/db/loyalty'
 import { LoyaltyCard } from '@/components/account/LoyaltyCard'
@@ -22,7 +21,8 @@ export default async function AccountPage(props: PageProps<'/[lang]/account'>) {
     getDictionary(lang),
     getOrdersByCustomer(user.id),
     getLoyaltyHistory(user.id, 5),
-    createAdminClient()
+    // Read own row using the user's session — no service role needed
+    supabase
       .from('customers')
       .select('loyalty_balance_points, preferred_language, birthday_date')
       .eq('id', user.id)

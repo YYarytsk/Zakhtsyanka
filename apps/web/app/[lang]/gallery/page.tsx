@@ -2,8 +2,28 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getDictionary, hasLocale } from '../dictionaries'
-import { createAdminClient } from '@/lib/supabase/server'
 import type { SupportedLocale } from '@/app/[lang]/dictionaries'
+
+// Gallery items are publicly readable — use the anon key via REST, no service role needed.
+async function fetchGallery(tag?: string): Promise<GalleryItem[]> {
+  const url  = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !anon) return []
+
+  let endpoint = `${url}/rest/v1/gallery?select=id,caption_uk,caption_en,photos,tags&is_published=eq.true&order=sort_order`
+  if (tag) endpoint += `&tags=cs.{${tag}}`
+
+  try {
+    const res = await fetch(endpoint, {
+      headers: { apikey: anon, Authorization: `Bearer ${anon}` },
+      next: { revalidate: 300 },
+    })
+    if (!res.ok) return []
+    return (await res.json()) as GalleryItem[]
+  } catch {
+    return []
+  }
+}
 
 interface GalleryItem {
   id: string
@@ -27,8 +47,6 @@ const TAG_LABELS: Record<string, { uk: string; en: string }> = {
   romantic:   { uk: 'Романтичні',   en: 'Romantic' },
 }
 
-export const revalidate = 300  // refresh every 5 minutes
-
 export default async function GalleryPage(props: PageProps<'/[lang]/gallery'>) {
   const { lang } = await props.params
   if (!hasLocale(lang)) notFound()
@@ -36,17 +54,7 @@ export default async function GalleryPage(props: PageProps<'/[lang]/gallery'>) {
   const sp = await props.searchParams
   const activeTag = typeof sp['tag'] === 'string' ? sp['tag'] : null
 
-  const supabase = createAdminClient()
-  let q = supabase
-    .from('gallery')
-    .select('id, caption_uk, caption_en, photos, tags')
-    .eq('is_published', true)
-    .order('sort_order')
-
-  if (activeTag) q = q.contains('tags', [activeTag])
-
-  const { data: items } = await q.returns<GalleryItem[]>()
-  const gallery = items ?? []
+  const gallery = await fetchGallery(activeTag ?? undefined)
 
   // Collect all tags from all items for filter bar
   const allTags = [...new Set(gallery.flatMap((g) => g.tags).filter((t) => t in TAG_LABELS))]
