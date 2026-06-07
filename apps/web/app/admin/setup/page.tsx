@@ -16,9 +16,8 @@ export default async function AdminSetupPage() {
   }
 
   return (
-    <html lang="uk">
-      <body style={{ margin: 0, fontFamily: 'system-ui, sans-serif', background: '#fafaf9', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ maxWidth: 440, width: '100%', padding: '0 16px' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ maxWidth: 440, width: '100%', padding: '0 16px' }}>
           <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #e7e5e4', padding: 32 }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
               <p style={{ fontSize: 40, margin: '0 0 8px' }}>🥐</p>
@@ -40,7 +39,6 @@ export default async function AdminSetupPage() {
             <SetupForm />
           </div>
         </div>
-      </body>
-    </html>
+      </div>
   )
 }

@@ -18,10 +18,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!staff) redirect('/uk')
 
   return (
-    <html lang="uk">
-      <body className="min-h-screen flex bg-stone-50">
-        {/* Sidebar */}
-        <aside className="w-56 shrink-0 bg-white border-r border-stone-200 flex flex-col">
+    <div className="min-h-screen flex bg-stone-50">
+      {/* Sidebar */}
+      <aside className="w-56 shrink-0 bg-white border-r border-stone-200 flex flex-col">
           <div className="p-4 border-b border-stone-200">
             <p className="font-bold text-amber-700 text-sm">Захцянка · Адмін</p>
           </div>
@@ -49,9 +48,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
         </aside>
 
-        {/* Main */}
-        <main className="flex-1 min-w-0 p-6">{children}</main>
-      </body>
-    </html>
+      {/* Main */}
+      <main className="flex-1 min-w-0 p-6">{children}</main>
+    </div>
   )
 }
