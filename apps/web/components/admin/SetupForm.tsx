@@ -22,13 +22,18 @@ export function SetupForm() {
     }
 
     start(async () => {
-      const res  = await fetch('/api/admin/setup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: 'admin' }) })
+      const res  = await fetch('/api/admin/setup', { method: 'POST' })
       const data = await res.json() as { ok?: boolean; error?: string; email?: string }
 
       if (res.ok && data.ok) {
         setStatus('done')
         setMessage(`✓ Акаунт адміна створено для ${data.email}. Переходимо до адмін-панелі…`)
         setTimeout(() => router.replace('/admin/orders'), 2000)
+      } else if (res.status === 409) {
+        // Already set up — just redirect
+        setStatus('done')
+        setMessage('Адмін вже налаштований. Переходимо…')
+        setTimeout(() => router.replace('/admin/orders'), 1500)
       } else {
         setStatus('error')
         setMessage(data.error ?? 'Щось пішло не так.')

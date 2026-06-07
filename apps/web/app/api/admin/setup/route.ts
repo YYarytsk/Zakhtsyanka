@@ -1,64 +1,44 @@
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/server'
 
-// First-run endpoint: creates the first staff/admin account.
-// Rejected if any staff member already exists.
+// Uses a security-definer Postgres function — no service role key required.
+// The function enforces: must be authenticated, and only works when zero staff exist.
 
-const schema = z.object({
-  role: z.enum(['admin', 'staff']).default('admin'),
-})
+export async function POST() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
-export async function POST(request: NextRequest) {
-  const admin = createAdminClient()
-
-  // Guard: reject if staff already exist
-  const { count } = await admin
-    .from('staff')
-    .select('id', { count: 'exact', head: true })
-
-  if ((count ?? 0) > 0) {
+  if (!user) {
     return NextResponse.json(
-      { error: 'Setup already completed. Sign in and use the admin panel.' },
+      { error: 'Sign in first, then complete setup.' },
+      { status: 401 },
+    )
+  }
+
+  const { data, error } = await supabase.rpc('setup_first_admin')
+
+  if (error) {
+    console.error('[admin/setup]', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  const result = data as { ok?: boolean; error?: string; email?: string }
+
+  if (result.error === 'not_authenticated') {
+    return NextResponse.json({ error: 'Sign in first.' }, { status: 401 })
+  }
+  if (result.error === 'already_setup') {
+    return NextResponse.json(
+      { error: 'Setup already completed. Sign in and go to /admin/orders.' },
       { status: 409 },
     )
   }
 
-  // Must be signed in
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    return NextResponse.json({ error: 'Sign in first, then complete setup.' }, { status: 401 })
-  }
-
-  const body   = await request.json().catch(() => ({}))
-  const parsed = schema.safeParse(body)
-  const role   = parsed.success ? parsed.data.role : 'admin'
-
-  // Insert into staff
-  const { error } = await admin.from('staff').insert({
-    id:    user.id,
-    email: user.email ?? '',
-    role,
-  })
-
-  if (error) {
-    if (error.code === '23505') {
-      return NextResponse.json({ error: 'You are already a staff member.' }, { status: 409 })
-    }
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
-
-  return NextResponse.json({ ok: true, role, email: user.email })
+  return NextResponse.json({ ok: true, email: result.email })
 }
 
 export async function GET() {
-  const admin = createAdminClient()
-  const { count } = await admin
-    .from('staff')
-    .select('id', { count: 'exact', head: true })
-
-  return NextResponse.json({ setupDone: (count ?? 0) > 0 })
+  const supabase = await createClient()
+  const { data, error } = await supabase.rpc('staff_exists')
+  return NextResponse.json({ setupDone: error ? false : !!data })
 }
