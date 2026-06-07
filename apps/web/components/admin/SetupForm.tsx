@@ -17,7 +17,7 @@ export function SetupForm() {
 
     if (!user) {
       setStatus('error')
-      setMessage('Ви не увійшли в акаунт. Будь ласка, спочатку зареєструйтесь або увійдіть.')
+      setMessage('Not signed in. Please sign in first at /uk/auth/login, then come back here.')
       return
     }
 
