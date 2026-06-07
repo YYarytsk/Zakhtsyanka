@@ -5,6 +5,18 @@ import { useRouter } from 'next/navigation'
 import type { Product } from '@zakhtsyanka/shared/types'
 import { Button } from '@/components/ui/Button'
 
+// ── AI draft helper ───────────────────────────────────────────────────────────
+
+async function draftEnglish(nameUk: string, descriptionUk: string) {
+  const res = await fetch('/api/admin/ai/translate-product', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nameUk, descriptionUk }),
+  })
+  if (!res.ok) return null
+  return res.json() as Promise<{ nameEn: string; descriptionEn: string }>
+}
+
 // ── Bilingual text field ──────────────────────────────────────────────────────
 
 function BilingualField({
@@ -76,7 +88,9 @@ interface ProductFormProps {
 export function ProductForm({ product, categories }: ProductFormProps) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
+  const [error,       setError]       = useState<string | null>(null)
+  const [aiDrafting,  setAiDrafting]  = useState(false)
+  const [aiDrafted,   setAiDrafted]   = useState(false)
 
   const [fields, setFields] = useState({
     nameUk:         product?.nameUk ?? '',
@@ -100,6 +114,21 @@ export function ProductForm({ product, categories }: ProductFormProps) {
 
   function toggleArray<T extends string>(arr: T[], item: T): T[] {
     return arr.includes(item) ? arr.filter((x) => x !== item) : [...arr, item]
+  }
+
+  async function handleAiDraft() {
+    if (!fields.nameUk.trim()) return
+    setAiDrafting(true)
+    const result = await draftEnglish(fields.nameUk, fields.descriptionUk)
+    if (result) {
+      setFields((prev) => ({
+        ...prev,
+        nameEn:        result.nameEn        || prev.nameEn,
+        descriptionEn: result.descriptionEn || prev.descriptionEn,
+      }))
+      setAiDrafted(true)
+    }
+    setAiDrafting(false)
   }
 
   function handleSubmit() {
@@ -148,6 +177,25 @@ export function ProductForm({ product, categories }: ProductFormProps) {
           onChangeEn={(v) => set('nameEn', v)}
           required
         />
+
+        {/* AI draft button — appears after Ukrainian name is entered */}
+        {fields.nameUk && (!fields.nameEn || !fields.descriptionEn) && (
+          <div className="flex items-center gap-3 -mt-2">
+            <button
+              type="button"
+              onClick={handleAiDraft}
+              disabled={aiDrafting}
+              className="flex items-center gap-1.5 text-xs text-purple-700 bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-full hover:bg-purple-100 transition-colors disabled:opacity-50"
+            >
+              {aiDrafting ? '⏳ Генеруємо…' : '✨ Чернетка EN (AI)'}
+            </button>
+            {aiDrafted && (
+              <span className="text-xs text-stone-400">
+                Перевірте і відредагуйте перед збереженням
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Descriptions */}
         <BilingualField

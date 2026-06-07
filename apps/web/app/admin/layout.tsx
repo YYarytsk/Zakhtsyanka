@@ -27,9 +27,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <nav className="flex flex-col gap-1 p-3 flex-1">
             {[
-              { href: '/admin/orders',   label: 'Замовлення' },
-              { href: '/admin/catalog',  label: 'Каталог' },
-              { href: '/admin/settings', label: 'Налаштування' },
+              { href: '/admin/orders',          label: 'Замовлення' },
+              { href: '/admin/catalog',         label: 'Каталог' },
+              { href: '/admin/custom-requests', label: 'Інд. торти' },
+              { href: '/admin/subscriptions',   label: 'Підписки' },
+              { href: '/admin/reports',         label: 'Звіти' },
+              { href: '/admin/settings',        label: 'Налаштування' },
             ].map(({ href, label }) => (
               <Link
                 key={href}

@@ -7,6 +7,7 @@ import { getOrdersByCustomer } from '@/lib/db/orders'
 import { getLoyaltyHistory } from '@/lib/db/loyalty'
 import { LoyaltyCard } from '@/components/account/LoyaltyCard'
 import { OrderHistoryList } from '@/components/account/OrderHistoryList'
+import { ProfileSettings } from '@/components/account/ProfileSettings'
 import { SignOutButton } from '@/components/auth/SignOutButton'
 
 export default async function AccountPage(props: PageProps<'/[lang]/account'>) {
@@ -23,9 +24,9 @@ export default async function AccountPage(props: PageProps<'/[lang]/account'>) {
     getLoyaltyHistory(user.id, 5),
     createAdminClient()
       .from('customers')
-      .select('loyalty_balance_points, preferred_language')
+      .select('loyalty_balance_points, preferred_language, birthday_date')
       .eq('id', user.id)
-      .single<{ loyalty_balance_points: number; preferred_language: string }>(),
+      .single<{ loyalty_balance_points: number; preferred_language: string; birthday_date: string | null }>(),
   ])
 
   const d = dict as Record<string, Record<string, string>>
@@ -64,6 +65,13 @@ export default async function AccountPage(props: PageProps<'/[lang]/account'>) {
           </Link>
         ))}
       </div>
+
+      {/* Profile settings */}
+      <ProfileSettings
+        lang={lang}
+        initialBirthday={customerData.data?.birthday_date ?? null}
+        initialLanguage={customerData.data?.preferred_language ?? 'uk'}
+      />
 
       {/* Recent orders */}
       <section>
