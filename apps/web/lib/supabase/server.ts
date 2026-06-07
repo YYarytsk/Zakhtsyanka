@@ -15,9 +15,17 @@ export async function createClient() {
           return cookieStore.getAll()
         },
         setAll(cookiesToSet: Array<{ name: string; value: string; options: CookieOptions }>) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
-          )
+          try {
+            // Supabase auth may try to refresh the session token and write cookies
+            // during a Server Component render, which Next.js forbids.
+            // The try-catch silences the error — session refresh is handled by
+            // the proxy (middleware) on the next request instead.
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options),
+            )
+          } catch {
+            // Intentionally ignored when called from a Server Component.
+          }
         },
       },
     },
