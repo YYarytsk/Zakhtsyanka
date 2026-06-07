@@ -27,10 +27,12 @@ function getLocaleFromRequest(request: NextRequest): SupportedLocale {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Skip Next.js internals and static files
+  // Skip Next.js internals, static files, and admin routes (no locale prefix)
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/auth') ||
     pathname.includes('.')
   ) {
     return NextResponse.next()
