@@ -2,13 +2,14 @@ import Link from 'next/link'
 import { getAllProductsAdmin } from '@/lib/db/products'
 import { formatPrice } from '@zakhtsyanka/shared/utils'
 import { DeleteProductButton } from '@/components/admin/DeleteProductButton'
+import { SeedButton } from '@/components/admin/SeedButton'
 
 export default async function AdminCatalogPage() {
   const products = await getAllProductsAdmin()
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-3">
         <h1 className="text-xl font-bold text-stone-900">Каталог</h1>
         <Link
           href={'/admin/catalog/new' as any}
@@ -17,6 +18,20 @@ export default async function AdminCatalogPage() {
           + Додати товар
         </Link>
       </div>
+
+      {products.length === 0 && (
+        <div className="mb-6 bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-center justify-between gap-4">
+          <div>
+            <p className="font-semibold text-amber-900">Каталог порожній</p>
+            <p className="text-sm text-amber-700 mt-0.5">
+              Завантажте 18 готових зразків товарів з фото та описами одним кліком.
+              <br />
+              <span className="text-xs text-amber-600">Потрібен SUPABASE_SERVICE_ROLE_KEY у .env.local</span>
+            </p>
+          </div>
+          <SeedButton />
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
         <table className="w-full text-sm">
