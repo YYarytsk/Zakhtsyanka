@@ -6,6 +6,7 @@ import { getStoreSettings } from '@/lib/db/settings'
 import { sendOrderConfirmation } from '@/lib/notifications/email'
 import { awardOrderPoints } from '@/lib/db/loyalty'
 import { updateRequestStatus } from '@/lib/db/customRequests'
+import { createSubscription } from '@/lib/db/subscriptions'
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null) as WfpIpnBody | null
@@ -20,9 +21,47 @@ export async function POST(request: NextRequest) {
   }
 
   // ── 2. Route by reference type ──────────────────────────────────────────────
+  const ref = String(body.orderReference)
+
+  // Subscription first-payment: "sub-init-{intentId}"
+  // Look up the subscription_intent, create the subscription with the returned recToken.
+  if (ref.startsWith('sub-init-')) {
+    const intentId = ref.replace('sub-init-', '')
+    if (body.transactionStatus === 'Approved') {
+      const recToken = (body as Record<string, unknown>)['recToken'] as string | undefined
+      const { createAdminClient } = await import('@/lib/supabase/server')
+      const admin = createAdminClient()
+
+      const { data: intent } = await admin
+        .from('subscription_intents')
+        .select('*')
+        .eq('id', intentId)
+        .eq('completed', false)
+        .single<{
+          id: string; customer_id: string; product_id: string
+          frequency: string; fulfillment_type: string; start_date: string
+        }>()
+
+      if (intent) {
+        await createSubscription({
+          customerId:      intent.customer_id,
+          productId:       intent.product_id,
+          frequency:       intent.frequency as any,
+          fulfillmentType: intent.fulfillment_type as any,
+          startDate:       intent.start_date,
+          recToken:        recToken ?? '',
+        }).catch(console.error)
+
+        // Mark intent as completed
+        await admin.from('subscription_intents').update({ completed: true, rec_token: recToken ?? '' }).eq('id', intentId)
+      }
+    }
+    return NextResponse.json({ status: 'accept' })
+  }
+
   // Deposit payments use reference "deposit-{requestId}"
-  if (String(body.orderReference).startsWith('deposit-')) {
-    const requestId = String(body.orderReference).replace('deposit-', '')
+  if (ref.startsWith('deposit-')) {
+    const requestId = ref.replace('deposit-', '')
     if (body.transactionStatus === 'Approved') {
       await updateRequestStatus(requestId, 'deposit_paid', { wfpRef: String(body.orderReference) }).catch(console.error)
     }
@@ -30,7 +69,7 @@ export async function POST(request: NextRequest) {
   }
 
   // ── 3. Find the order ───────────────────────────────────────────────────────
-  const order = await getOrderById(body.orderReference).catch(() => null)
+  const order = await getOrderById(ref).catch(() => null)
   if (!order) {
     console.error('[wfp-ipn] Order not found:', body.orderReference)
     // Acknowledge anyway — WayForPay retries on non-200 responses
