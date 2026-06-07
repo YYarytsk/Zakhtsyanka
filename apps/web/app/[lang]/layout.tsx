@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getDictionary, hasLocale, LOCALES } from './dictionaries'
 import { Nav } from '@/components/Nav'
 import { AnnouncementBanner } from '@/components/AnnouncementBanner'
+import { LangSetter } from '@/components/LangSetter'
 import { createClient } from '@/lib/supabase/server'
 
 export async function generateStaticParams() {
@@ -42,14 +43,10 @@ export default async function LocaleLayout(props: LayoutProps<'/[lang]'>) {
     (await createClient()).auth.getUser(),
   ])
 
-  // Set lang on the root <html> element synchronously (before paint) so that
-  // screen readers and search engines see the correct language. suppressHydrationWarning
-  // on the root <html> means React won't complain about the attribute changing.
   return (
     <>
-      <script
-        dangerouslySetInnerHTML={{ __html: `document.documentElement.lang="${lang}"` }}
-      />
+      {/* Sets document.documentElement.lang after hydration — no script-tag warnings */}
+      <LangSetter lang={lang} />
       <AnnouncementBanner lang={lang} />
       <Nav lang={lang} dict={dict} isLoggedIn={!!user} />
       <main className="flex-1">{props.children}</main>
