@@ -31,6 +31,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               { href: '/admin/catalog',         label: 'Каталог' },
               { href: '/admin/custom-requests', label: 'Інд. торти' },
               { href: '/admin/subscriptions',   label: 'Підписки' },
+              { href: '/admin/gallery',          label: 'Галерея' },
               { href: '/admin/reports',         label: 'Звіти' },
               { href: '/admin/settings',        label: 'Налаштування' },
             ].map(({ href, label }) => (
