@@ -5,6 +5,7 @@ import '../globals.css'
 import { getDictionary, hasLocale, LOCALES } from './dictionaries'
 import { Nav } from '@/components/Nav'
 import { AnnouncementBanner } from '@/components/AnnouncementBanner'
+import { createClient } from '@/lib/supabase/server'
 
 const inter = Inter({
   subsets: ['latin', 'cyrillic'],
@@ -44,13 +45,16 @@ export default async function LocaleLayout(props: LayoutProps<'/[lang]'>) {
   const { lang } = await props.params
   if (!hasLocale(lang)) notFound()
 
-  const dict = await getDictionary(lang)
+  const [dict, { data: { user } }] = await Promise.all([
+    getDictionary(lang),
+    (await createClient()).auth.getUser(),
+  ])
 
   return (
     <html lang={lang} className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-stone-50 text-stone-900">
         <AnnouncementBanner lang={lang} />
-        <Nav lang={lang} dict={dict} />
+        <Nav lang={lang} dict={dict} isLoggedIn={!!user} />
         <main className="flex-1">{props.children}</main>
         <footer className="border-t border-stone-200 py-8 text-center text-sm text-stone-500">
           {lang === 'uk'
