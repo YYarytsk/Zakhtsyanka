@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "Захцянка",
+    "slug": "zakhtsyanka",
+    "version": "1.0.0",
+    "scheme": "zakhtsyanka",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zakhtsyanka.app"
+    },
+    "android": {
+      "package": "com.zakhtsyanka.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#d97706",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage":  "./assets/android-icon-background.png",
+        "monochromeImage":  "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#d97706"
+        }
+      ],
+      "expo-secure-store",
+      "expo-localization"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@zakhtsyanka/shared/*": ["../../packages/shared/src/*"]
+    }
+  }
+}

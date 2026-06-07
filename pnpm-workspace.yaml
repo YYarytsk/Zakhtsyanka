@@ -4,5 +4,6 @@ packages:
 allowBuilds:
   '0': sharp
   '1': unrs-resolver
+  msgpackr-extract: true
   sharp: true
   unrs-resolver: true
