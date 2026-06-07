@@ -31,6 +31,9 @@ export function Nav({ lang, dict, isLoggedIn = false }: NavProps) {
           <Link href={lp(lang, 'catalog')} className="px-3 py-1.5 rounded hover:bg-stone-100 transition-colors">
             {nav['catalog']}
           </Link>
+          <Link href={lp(lang, 'custom-order')} className="px-3 py-1.5 rounded hover:bg-stone-100 transition-colors hidden md:block">
+            {lang === 'uk' ? 'Торт на замовлення' : 'Custom cake'}
+          </Link>
           <CartBadge lang={lang} label={nav['cart'] ?? ''} />
           <Link href={lp(lang, 'orders')} className="px-3 py-1.5 rounded hover:bg-stone-100 transition-colors hidden sm:block">
             {nav['orders']}

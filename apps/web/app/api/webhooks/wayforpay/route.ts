@@ -5,6 +5,7 @@ import { getOrderById, updateOrderStatus } from '@/lib/db/orders'
 import { getStoreSettings } from '@/lib/db/settings'
 import { sendOrderConfirmation } from '@/lib/notifications/email'
 import { awardOrderPoints } from '@/lib/db/loyalty'
+import { updateRequestStatus } from '@/lib/db/customRequests'
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null) as WfpIpnBody | null
@@ -18,7 +19,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ status: 'refuse', message: 'Invalid signature' })
   }
 
-  // ── 2. Find the order ───────────────────────────────────────────────────────
+  // ── 2. Route by reference type ──────────────────────────────────────────────
+  // Deposit payments use reference "deposit-{requestId}"
+  if (String(body.orderReference).startsWith('deposit-')) {
+    const requestId = String(body.orderReference).replace('deposit-', '')
+    if (body.transactionStatus === 'Approved') {
+      await updateRequestStatus(requestId, 'deposit_paid', { wfpRef: String(body.orderReference) }).catch(console.error)
+    }
+    return NextResponse.json({ status: 'accept' })
+  }
+
+  // ── 3. Find the order ───────────────────────────────────────────────────────
   const order = await getOrderById(body.orderReference).catch(() => null)
   if (!order) {
     console.error('[wfp-ipn] Order not found:', body.orderReference)
