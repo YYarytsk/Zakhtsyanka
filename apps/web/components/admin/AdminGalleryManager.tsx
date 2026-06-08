@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { AdminImageUploader } from './AdminImageUploader'
 
 interface GalleryItem {
   id: string
@@ -20,12 +21,12 @@ interface AdminGalleryManagerProps {
 interface FormState {
   captionUk:   string
   captionEn:   string
-  photos:      string
+  photoUrls:   string[]   // uploaded file URLs from Supabase Storage
   tags:        string
   isPublished: boolean
 }
 
-const emptyForm: FormState = { captionUk: '', captionEn: '', photos: '', tags: '', isPublished: true }
+const emptyForm: FormState = { captionUk: '', captionEn: '', photoUrls: [], tags: '', isPublished: true }
 
 export function AdminGalleryManager({ initialItems }: AdminGalleryManagerProps) {
   const router   = useRouter()
@@ -40,15 +41,14 @@ export function AdminGalleryManager({ initialItems }: AdminGalleryManagerProps) 
 
   // ── Add ─────────────────────────────────────────────────────────────────
   async function handleAdd() {
-    const photos = form.photos.split(',').map((s) => s.trim()).filter(Boolean)
-    const tags   = form.tags.split(',').map((s) => s.trim()).filter(Boolean)
-    if (!form.captionUk || photos.length === 0) return
+    const tags = form.tags.split(',').map((s) => s.trim()).filter(Boolean)
+    if (!form.captionUk || form.photoUrls.length === 0) return
 
     start(async () => {
       const res = await fetch('/api/admin/gallery', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ captionUk: form.captionUk, captionEn: form.captionEn, photos, tags, isPublished: form.isPublished }),
+        body: JSON.stringify({ captionUk: form.captionUk, captionEn: form.captionEn, photos: form.photoUrls, tags, isPublished: form.isPublished }),
       })
       if (res.ok) {
         const newItem = await res.json() as GalleryItem
@@ -66,7 +66,7 @@ export function AdminGalleryManager({ initialItems }: AdminGalleryManagerProps) 
     setEditForm({
       captionUk:   item.caption_uk,
       captionEn:   item.caption_en,
-      photos:      item.photos.join(', '),
+      photoUrls:   item.photos,
       tags:        item.tags.join(', '),
       isPublished: item.is_published,
     })
@@ -76,7 +76,7 @@ export function AdminGalleryManager({ initialItems }: AdminGalleryManagerProps) 
   function cancelEdit() { setEditId(null) }
 
   async function handleSaveEdit(id: string) {
-    const photos = editForm.photos.split(',').map((s) => s.trim()).filter(Boolean)
+    const photos = editForm.photoUrls
     const tags   = editForm.tags.split(',').map((s) => s.trim()).filter(Boolean)
     if (!editForm.captionUk || photos.length === 0) return
 
@@ -128,6 +128,20 @@ export function AdminGalleryManager({ initialItems }: AdminGalleryManagerProps) 
   function FormFields({ f, setF }: { f: FormState; setF: React.Dispatch<React.SetStateAction<FormState>> }) {
     return (
       <>
+        {/* Photo uploader */}
+        <div>
+          <label className="text-xs font-medium text-stone-600 mb-2 block">Фотографії *</label>
+          <AdminImageUploader
+            bucket="gallery-photos"
+            value={f.photoUrls}
+            onChange={(urls) => setF((p) => ({ ...p, photoUrls: urls }))}
+            maxFiles={5}
+            maxSizeMb={10}
+            label="Завантажити фото галереї"
+          />
+        </div>
+
+        {/* Captions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="text-xs text-stone-500 mb-1 block">🇺🇦 Підпис (UK) *</label>
@@ -140,17 +154,15 @@ export function AdminGalleryManager({ initialItems }: AdminGalleryManagerProps) 
               className={inputBase} placeholder="Wedding cake with flowers" />
           </div>
         </div>
-        <div>
-          <label className="text-xs text-stone-500 mb-1 block">URL фотографій (через кому) *</label>
-          <textarea value={f.photos} onChange={(e) => setF((p) => ({ ...p, photos: e.target.value }))}
-            className={`${inputBase} resize-y min-h-[64px]`} rows={2}
-            placeholder="https://…, https://…" />
-        </div>
+
+        {/* Tags */}
         <div>
           <label className="text-xs text-stone-500 mb-1 block">Теги (через кому)</label>
           <input value={f.tags} onChange={(e) => setF((p) => ({ ...p, tags: e.target.value }))}
             className={inputBase} placeholder="wedding, floral, custom" />
         </div>
+
+        {/* Published */}
         <label className="flex items-center gap-2 cursor-pointer text-sm text-stone-700 select-none">
           <input type="checkbox" checked={f.isPublished}
             onChange={(e) => setF((p) => ({ ...p, isPublished: e.target.checked }))}
@@ -178,9 +190,9 @@ export function AdminGalleryManager({ initialItems }: AdminGalleryManagerProps) 
           <h2 className="font-semibold text-stone-900">Нова галерейна картка</h2>
           <FormFields f={form} setF={setForm} />
           <div className="flex gap-2 pt-1">
-            <button onClick={handleAdd} disabled={pending || !form.captionUk || !form.photos}
+            <button onClick={handleAdd} disabled={pending || !form.captionUk || form.photoUrls.length === 0}
               className="px-6 py-2 bg-amber-600 text-white rounded-full text-sm font-medium hover:bg-amber-700 disabled:opacity-50">
-              {pending ? 'Зберігаємо…' : 'Додати'}
+              {pending ? 'Зберігаємо…' : '✓ Додати в галерею'}
             </button>
             <button onClick={() => { setShowAdd(false); setForm(emptyForm) }}
               className="px-6 py-2 bg-stone-100 text-stone-600 rounded-full text-sm font-medium hover:bg-stone-200">

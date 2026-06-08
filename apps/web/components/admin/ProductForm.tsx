@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Product } from '@zakhtsyanka/shared/types'
 import { Button } from '@/components/ui/Button'
+import { AdminImageUploader } from './AdminImageUploader'
 
 // ── AI draft helper ───────────────────────────────────────────────────────────
 
@@ -97,6 +98,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
     nameEn:         product?.nameEn ?? '',
     descriptionUk:  product?.descriptionUk ?? '',
     descriptionEn:  product?.descriptionEn ?? '',
+    photos:         product?.photos ?? [] as string[],
     allergensUk:    product?.allergensUk ?? '',
     allergensEn:    product?.allergensEn ?? '',
     priceCents:     product?.priceCents ?? 0,
@@ -216,6 +218,19 @@ export function ProductForm({ product, categories }: ProductFormProps) {
           onChangeEn={(v) => set('allergensEn', v)}
           multiline
         />
+
+        {/* Photos */}
+        <div>
+          <label className="text-sm font-medium text-stone-700 mb-2 block">Фотографії товару</label>
+          <AdminImageUploader
+            bucket="product-photos"
+            value={fields.photos}
+            onChange={(urls) => set('photos', urls)}
+            maxFiles={8}
+            maxSizeMb={8}
+            label="Завантажити фото продукту"
+          />
+        </div>
 
         {/* Price + category */}
         <div className="grid grid-cols-2 gap-4">
