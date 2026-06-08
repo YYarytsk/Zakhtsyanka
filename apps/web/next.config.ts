@@ -4,13 +4,17 @@ const nextConfig: NextConfig = {
   // Emit standalone output for Docker / Azure Container Apps
   output: 'standalone',
 
-  // Allow images from Supabase Storage
+  // Allow images from Supabase Storage and Unsplash (used for sample product photos)
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '*.supabase.co',
         pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       },
     ],
   },
