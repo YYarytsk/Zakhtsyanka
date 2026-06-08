@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 
 interface GalleryItem {
   id: string
@@ -122,16 +121,35 @@ export function AdminGalleryManager({ initialItems }: AdminGalleryManagerProps) 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {items.map((item) => (
           <div key={item.id} className={['bg-white rounded-2xl border overflow-hidden', item.is_published ? 'border-stone-200' : 'border-stone-100 opacity-60'].join(' ')}>
-            {item.photos[0] && (
-              <div className="relative aspect-[4/3]">
-                <Image src={item.photos[0]} alt={item.caption_uk} fill className="object-cover" sizes="400px" />
-                {!item.is_published && (
-                  <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                    <span className="text-xs bg-stone-700 text-white px-2 py-1 rounded-full">Схований</span>
-                  </div>
-                )}
-              </div>
-            )}
+            <div className="relative aspect-[4/3] bg-stone-100">
+              {item.photos[0] ? (
+                // Use plain <img> in admin so onError fallback works without next/image constraints
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={item.photos[0]}
+                  alt={item.caption_uk}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const t = e.currentTarget
+                    t.style.display = 'none'
+                    const parent = t.parentElement
+                    if (parent && !parent.querySelector('.img-fallback')) {
+                      const fb = document.createElement('div')
+                      fb.className = 'img-fallback absolute inset-0 flex flex-col items-center justify-center text-stone-400 gap-1 text-xs'
+                      fb.innerHTML = '<span class="text-3xl">🖼️</span><span>Зображення недоступне</span>'
+                      parent.appendChild(fb)
+                    }
+                  }}
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-3xl text-stone-300">🖼️</div>
+              )}
+              {!item.is_published && (
+                <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
+                  <span className="text-xs bg-stone-700 text-white px-2 py-1 rounded-full">Схований</span>
+                </div>
+              )}
+            </div>
             <div className="p-3 flex flex-col gap-2">
               <p className="text-sm font-medium text-stone-900 leading-snug">{item.caption_uk}</p>
               {item.tags.length > 0 && (
