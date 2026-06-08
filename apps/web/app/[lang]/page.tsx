@@ -57,8 +57,8 @@ export default async function HomePage(props: PageProps<'/[lang]'>) {
       <section className="relative min-h-[88vh] flex items-center justify-center overflow-hidden">
         {/* Background image */}
         <Image
-          src="https://images.unsplash.com/photo-1568254183919-78a4f43a2877?w=1600&q=85"
-          alt="Bakery"
+          src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=1600&q=85"
+          alt="Pastry and cakes"
           fill
           className="object-cover object-center scale-105"
           priority
