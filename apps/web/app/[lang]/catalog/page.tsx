@@ -16,11 +16,7 @@ export default async function CatalogPage(props: PageProps<'/[lang]/catalog'>) {
   const sp = await props.searchParams
   const categorySlug = typeof sp['category'] === 'string' ? sp['category'] : undefined
   const rawTags = sp['tags']
-  const dietaryTags = Array.isArray(rawTags)
-    ? rawTags
-    : rawTags
-    ? [rawTags]
-    : []
+  const dietaryTags = Array.isArray(rawTags) ? rawTags : rawTags ? [rawTags] : []
   const query = typeof sp['q'] === 'string' ? sp['q'] : undefined
   const fulfillmentType = typeof sp['fulfillment'] === 'string'
     ? (sp['fulfillment'] as FulfillmentType)
@@ -35,6 +31,7 @@ export default async function CatalogPage(props: PageProps<'/[lang]/catalog'>) {
   const d = dict as unknown as Record<string, Record<string, string>>
   const catalogDict = d['catalog'] ?? {}
   const filtersDict = (d['catalog'] as unknown as Record<string, Record<string, string>>)?.['filters'] ?? {}
+  const isUk = lang === 'uk'
 
   const dietaryOptions = [
     { key: 'vegan',        label: filtersDict['vegan'] ?? 'Vegan' },
@@ -44,47 +41,70 @@ export default async function CatalogPage(props: PageProps<'/[lang]/catalog'>) {
     { key: 'dairy-free',   label: filtersDict['dairyFree'] ?? 'DF' },
   ]
 
+  const activeCategory = categories.find((c) => c.slug === categorySlug)
+
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-stone-900 mb-6">{catalogDict['title']}</h1>
-
-      {/* Search + filters */}
-      <div className="flex flex-col gap-4 mb-8">
-        <Suspense>
-          <SearchInput
-            placeholder={catalogDict['searchPlaceholder'] ?? ''}
-            lang={lang}
-            defaultValue={query}
-          />
-        </Suspense>
-
-        <CategoryNav
-          categories={categories}
-          activeSlug={categorySlug ?? null}
-          lang={lang}
-          allLabel={filtersDict['all'] ?? 'All'}
-        />
-
-        <Suspense>
-          <FilterChips
-            options={dietaryOptions}
-            activeKeys={dietaryTags}
-            paramName="tags"
-            lang={lang}
-          />
-        </Suspense>
+    <div className="min-h-screen bg-stone-50">
+      {/* Page header */}
+      <div className="bg-white border-b border-stone-100 py-8 px-4">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-3xl font-bold text-stone-900 mb-1">
+            {activeCategory
+              ? (isUk ? activeCategory.nameUk : activeCategory.nameEn)
+              : catalogDict['title']}
+          </h1>
+          <p className="text-stone-500 text-sm">
+            {products.length > 0
+              ? (isUk ? `${products.length} позицій` : `${products.length} items`)
+              : ''}
+          </p>
+        </div>
       </div>
 
-      {/* Product grid */}
-      {products.length === 0 ? (
-        <p className="text-stone-500 py-12 text-center">{catalogDict['noResults']}</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} lang={lang} dict={d} />
-          ))}
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        {/* Search + filters */}
+        <div className="bg-white rounded-2xl border border-stone-100 p-4 mb-8 flex flex-col gap-4 shadow-sm">
+          <Suspense>
+            <SearchInput
+              placeholder={catalogDict['searchPlaceholder'] ?? ''}
+              lang={lang}
+              defaultValue={query}
+            />
+          </Suspense>
+
+          <CategoryNav
+            categories={categories}
+            activeSlug={categorySlug ?? null}
+            lang={lang}
+            allLabel={filtersDict['all'] ?? 'All'}
+          />
+
+          {dietaryOptions.some((o) => o.label) && (
+            <Suspense>
+              <FilterChips
+                options={dietaryOptions}
+                activeKeys={dietaryTags}
+                paramName="tags"
+                lang={lang}
+              />
+            </Suspense>
+          )}
         </div>
-      )}
+
+        {/* Product grid */}
+        {products.length === 0 ? (
+          <div className="text-center py-24">
+            <p className="text-5xl mb-4">🔍</p>
+            <p className="text-stone-500">{catalogDict['noResults']}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} lang={lang} dict={d} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

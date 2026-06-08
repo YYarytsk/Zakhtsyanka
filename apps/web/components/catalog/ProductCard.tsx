@@ -23,47 +23,65 @@ export function ProductCard({ product, lang, dict }: ProductCardProps) {
   return (
     <Link
       href={href}
-      className="group flex flex-col rounded-2xl bg-white border border-stone-100 overflow-hidden hover:shadow-md transition-shadow"
+      className="group flex flex-col rounded-2xl bg-white overflow-hidden border border-stone-100 hover:shadow-xl hover:shadow-stone-200/60 hover:-translate-y-1 transition-all duration-300"
     >
-      <div className="relative aspect-[4/3] bg-stone-100">
+      {/* Image */}
+      <div className="relative aspect-[4/3] bg-stone-100 overflow-hidden">
         {photo ? (
           <Image
             src={photo}
             alt={name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-4xl">🥐</div>
+          <div className="absolute inset-0 flex items-center justify-center text-5xl bg-amber-50">🥐</div>
         )}
+
+        {/* Out of stock overlay */}
         {!product.isAvailable && (
-          <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
-            <span className="text-sm font-medium text-stone-500">{catalogDict['outOfStock']}</span>
+          <div className="absolute inset-0 bg-white/75 flex items-center justify-center">
+            <span className="bg-white text-stone-500 text-xs font-semibold px-3 py-1.5 rounded-full border border-stone-200 shadow-sm">
+              {catalogDict['outOfStock']}
+            </span>
           </div>
         )}
-      </div>
 
-      <div className="p-4 flex flex-col gap-2 flex-1">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold text-stone-900 leading-snug">
-            {name}
-            {isPending && (
-              <span className="ml-1 text-xs text-stone-400 font-normal">
-                ({catalogDict['translationPending']})
-              </span>
-            )}
-          </h3>
-          <span className="shrink-0 font-bold text-amber-700">{price}</span>
-        </div>
-
+        {/* Dietary badges top-right */}
         {product.dietaryTags.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {product.dietaryTags.map((tag) => (
+          <div className="absolute top-2.5 right-2.5 flex flex-col gap-1">
+            {product.dietaryTags.slice(0, 2).map((tag) => (
               <DietaryBadge key={tag} tag={tag} lang={lang} compact />
             ))}
           </div>
         )}
+
+        {/* Price badge bottom-left */}
+        <div className="absolute bottom-2.5 left-2.5">
+          <span className="bg-white/90 backdrop-blur-sm text-amber-700 font-bold text-sm px-2.5 py-1 rounded-full shadow-sm">
+            {price}
+          </span>
+        </div>
+      </div>
+
+      {/* Name */}
+      <div className="px-4 py-3.5 flex-1 flex flex-col justify-between gap-2">
+        <h3 className="font-semibold text-stone-900 leading-snug text-[15px] line-clamp-2">
+          {name}
+          {isPending && (
+            <span className="ml-1.5 text-xs text-stone-400 font-normal">
+              ({catalogDict['translationPending']})
+            </span>
+          )}
+        </h3>
+
+        {/* Fulfillment type hint */}
+        <p className="text-xs text-stone-400">
+          {product.fulfillmentTypes
+            .map((t) => (dict['catalog'] as unknown as Record<string, Record<string, string>>)?.['fulfillment']?.[t] ?? t)
+            .join(' · ')}
+        </p>
       </div>
     </Link>
   )

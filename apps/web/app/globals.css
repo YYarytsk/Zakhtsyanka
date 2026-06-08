@@ -4,7 +4,16 @@
   --font-sans: var(--font-inter);
 }
 
-/* Smooth focus rings globally */
 * {
   outline-color: theme(colors.amber.500);
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Thin custom scrollbar */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: theme(colors.stone.300); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: theme(colors.stone.400); }

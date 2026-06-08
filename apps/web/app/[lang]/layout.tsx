@@ -50,10 +50,27 @@ export default async function LocaleLayout(props: LayoutProps<'/[lang]'>) {
       <AnnouncementBanner lang={lang} />
       <Nav lang={lang} dict={dict} isLoggedIn={!!user} />
       <main className="flex-1">{props.children}</main>
-      <footer className="border-t border-stone-200 py-8 text-center text-sm text-stone-500">
-        {lang === 'uk'
-          ? process.env.NEXT_PUBLIC_STORE_NAME_UK ?? 'Захцянка'
-          : process.env.NEXT_PUBLIC_STORE_NAME_EN ?? 'Zakhtsyanka'}
+      <footer className="bg-stone-900 text-stone-400 py-12 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8">
+            <p className="text-white font-bold text-lg flex items-center gap-2">
+              <span>🥐</span>
+              {lang === 'uk' ? process.env.NEXT_PUBLIC_STORE_NAME_UK ?? 'Захцянка' : process.env.NEXT_PUBLIC_STORE_NAME_EN ?? 'Zakhtsyanka'}
+            </p>
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm justify-center">
+              {[
+                [`/${lang}/catalog`,      lang === 'uk' ? 'Меню'               : 'Menu'],
+                [`/${lang}/gallery`,      lang === 'uk' ? 'Галерея'            : 'Gallery'],
+                [`/${lang}/custom-order`, lang === 'uk' ? 'Торт на замовлення' : 'Custom cake'],
+              ].map(([href, label]) => (
+                <a key={href} href={href} className="hover:text-white transition-colors">{label}</a>
+              ))}
+            </div>
+          </div>
+          <div className="border-t border-stone-800 pt-6 text-xs text-center text-stone-600">
+            {lang === 'uk' ? 'Ручна робота · Щодня свіже' : 'Handmade · Fresh daily'}
+          </div>
+        </div>
       </footer>
     </>
   )
